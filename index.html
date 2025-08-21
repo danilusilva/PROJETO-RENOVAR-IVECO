@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Renovar Iveco - Protótipo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #004d80;
+            font-weight: 700;
+        }
+        p {
+            font-size: 1.1em;
+            color: #666;
+        }
+        .screen {
+            display: none;
+        }
+        #intro-screen {
+            display: block;
+        }
+        .main-button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+        }
+        .main-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .journey-card {
+            background-color: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            border-left: 4px solid #007bff;
+        }
+        .journey-card h3 {
+            margin-top: 0;
+            color: #004d80;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .journey-card .icon {
+            font-size: 1.5em;
+            color: #007bff;
+        }
+        .journey-card p {
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .result-box {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+        }
+        .result-box h2 {
+            color: #004d80;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+        .carbon-score {
+            font-size: 3em;
+            font-weight: 700;
+            color: #28a745;
+            margin: 10px 0;
+        }
+        .comparison-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #555;
+        }
+        .comparison-text span {
+            color: #004d80;
+        }
+
+        .actions {
+            margin-top: 30px;
+        }
+        .action-button {
+            background-color: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .action-button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="intro-screen" class="screen">
+            <img src="assets/Rgr9Zo9f_450x289.jpg" alt="Dashboard de Rastreabilidade">
+            <h1>Dashboard de Rastreabilidade</h1>
+            <p>Conheça a jornada de um material sustentável em nossa cadeia de suprimentos.</p>
+            <div class="button-group">
+                <button class="main-button track-btn" data-material="aluminio">Rastrear Lote de Alumínio</button>
+                <button class="main-button track-btn" data-material="aco">Rastrear Lote de Aço Reciclado</button>
+                <button class="main-button track-btn" data-material="plastico">Rastrear Lote de Plástico Reuso</button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="screen">
+            <h1 id="result-title"></h1>
+            
+            <div id="journey-container" class="journey-grid">
+                </div>
+
+            <div class="result-box">
+                <h2>Pegada de Carbono Total do Lote</h2>
+                <div id="carbon-score" class="carbon-score"></div>
+                <p id="comparison-text" class="comparison-text"></p>
+            </div>
+            
+            <div class="actions">
+                <button class="action-button" id="back-btn">← Voltar para a Tela Inicial</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // NOVO: Dados dos materiais
+        const materials = {
+            aluminio: {
+                title: "Jornada do Material: Lote de Alumínio #7284",
+                journey: [
+                    { title: "Origem do Resíduo", info: 'Sucata de alumínio da "Recicla Tudo Indústria" - MG.', score: '0.5 kg CO₂e/kg' },
+                    { title: "Processamento", info: 'Carga processada e purificada na unidade "Verde Metalurgia" - SP.', score: '0.2 kg CO₂e/kg' },
+                    { title: "Transporte", info: 'Transportado via modal ferroviário de SP para a Iveco em MG.', score: '0.1 kg CO₂e/kg' }
+                ],
+                totalScore: "0.8 kg CO₂e/kg",
+                comparison: "Isso representa uma **redução de 95%** em relação ao material virgem (16 kg CO₂e/kg)."
+            },
+            aco: {
+                title: "Jornada do Material: Lote de Aço #8901",
+                journey: [
+                    { title: "Origem da Sucata", info: 'Sucata de aço da "Metalúrgica Forja Rápida" - SP.', score: '0.3 kg CO₂e/kg' },
+                    { title: "Re-fundição e Molde", info: 'Re-fundido na unidade "Siderúrgica A" - MG.', score: '0.1 kg CO₂e/kg' },
+                    { title: "Transporte", info: 'Transportado via modal rodoviário (caminhão elétrico) até a Iveco.', score: '0.05 kg CO₂e/kg' }
+                ],
+                totalScore: "0.45 kg CO₂e/kg",
+                comparison: "Isso representa uma **redução de 90%** em relação ao material virgem (4.5 kg CO₂e/kg)."
+            },
+            plastico: {
+                title: "Jornada do Material: Lote de Plástico #5678",
+                journey: [
+                    { title: "Coleta e Separação", info: 'Resíduos de polímeros de "Plásticos Reusáveis" - PR.', score: '0.1 kg CO₂e/kg' },
+                    { title: "Granulação e Extrusão", info: 'Transformado em grânulos plásticos na unidade "Eco Plásticos" - RJ.', score: '0.05 kg CO₂e/kg' },
+                    { title: "Transporte", info: 'Transportado via modal marítimo (cabotagem) até o porto mais próximo.', score: '0.02 kg CO₂e/kg' }
+                ],
+                totalScore: "0.17 kg CO₂e/kg",
+                comparison: "Isso representa uma **redução de 85%** em relação ao material virgem (1.1 kg CO₂e/kg)."
+            }
+        };
+
+        // NOVO: Seletores para os elementos
+        const introScreen = document.getElementById('intro-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const trackButtons = document.querySelectorAll('.track-btn');
+        const resultTitle = document.getElementById('result-title');
+        const journeyContainer = document.getElementById('journey-container');
+        const carbonScore = document.getElementById('carbon-score');
+        const comparisonText = document.getElementById('comparison-text');
+        const backButton = document.getElementById('back-btn');
+
+        // NOVO: Funcionalidade para os botões de rastreio
+        trackButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const materialType = this.dataset.material;
+                const materialData = materials[materialType];
+
+                if (materialData) {
+                    // Atualiza o título
+                    resultTitle.textContent = materialData.title;
+
+                    // Atualiza os cards da jornada
+                    journeyContainer.innerHTML = ''; // Limpa o conteúdo anterior
+                    materialData.journey.forEach(step => {
+                        const card = document.createElement('div');
+                        card.classList.add('journey-card');
+                        card.innerHTML = `
+                            <h3><span class="icon">📍</span>${step.title}</h3>
+                            <p>${step.info}</p>
+                            <p>Pegada de Carbono: <strong>${step.score}</strong></p>
+                        `;
+                        journeyContainer.appendChild(card);
+                    });
+
+                    // Atualiza o placar e a comparação
+                    carbonScore.textContent = materialData.totalScore;
+                    comparisonText.innerHTML = materialData.comparison;
+
+                    // Alterna as telas
+                    introScreen.style.display = 'none';
+                    resultScreen.style.display = 'block';
+                }
+            });
+        });
+
+        // Funcionalidade para o botão de voltar
+        backButton.addEventListener('click', function() {
+            resultScreen.style.display = 'none';
+            introScreen.style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
