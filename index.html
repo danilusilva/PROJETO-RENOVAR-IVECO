@@ -3,14 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projeto Renovar Iveco - Protótipo</title>
+    <title>Iveco Valor Circular - Protótipo</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+        /* Variáveis de Cores - Modo Claro (Padrão) */
+        :root {
+            --bg-color: #f0f2f5;
+            --container-bg: #fff;
+            --text-color: #333;
+            --heading-color: #206634; /* Alterado de azul para verde escuro */
+            --card-bg: #f9f9f9;
+            --primary-color: #28a745; /* Alterado de azul para verde */
+            --primary-hover: #1e7e34; /* Alterado de azul para verde mais escuro */
+            --carbon-score-color: #28a745; 
+        }
+
+        /* Variáveis de Cores - Modo Escuro */
+        .dark-mode {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --heading-color: #48bb78; /* Alterado de azul para verde claro */
+            --card-bg: #2d2d2d;
+            --primary-color: #48bb78; /* Alterado de azul para verde */
+            --primary-hover: #38a169; /* Alterado de azul para verde mais escuro */
+            --carbon-score-color: #48bb78;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,22 +42,24 @@
             align-items: center;
             min-height: 100vh;
             text-align: center;
+            transition: background-color 0.5s;
         }
         .container {
             width: 90%;
             max-width: 900px;
-            background-color: #fff;
+            background-color: var(--container-bg);
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: background-color 0.5s;
         }
         h1 {
-            color: #004d80;
+            color: var(--heading-color);
             font-weight: 700;
         }
         p {
             font-size: 1.1em;
-            color: #666;
+            color: var(--text-color);
         }
         .screen {
             display: none;
@@ -46,7 +72,7 @@
             font-size: 1.1em;
             font-weight: 600;
             color: #fff;
-            background-color: #007bff;
+            background-color: var(--primary-color);
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -54,7 +80,7 @@
             margin: 10px;
         }
         .main-button:hover {
-            background-color: #0056b3;
+            background-color: var(--primary-hover);
             transform: translateY(-2px);
         }
 
@@ -65,16 +91,17 @@
             margin-top: 30px;
         }
         .journey-card {
-            background-color: #f9f9f9;
+            background-color: var(--card-bg);
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: left;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid var(--primary-color); /* Alterado de azul para verde */
+            transition: background-color 0.5s;
         }
         .journey-card h3 {
             margin-top: 0;
-            color: #004d80;
+            color: var(--heading-color);
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -82,37 +109,38 @@
         }
         .journey-card .icon {
             font-size: 1.5em;
-            color: #007bff;
+            color: var(--primary-color); /* Alterado de azul para verde */
         }
         .journey-card p {
             font-size: 0.9em;
-            margin: 5px 0;
+            color: var(--text-color);
         }
 
         .result-box {
             margin-top: 40px;
             padding: 30px;
-            background-color: #e6f7ff;
+            background-color: var(--card-bg);
             border-radius: 10px;
+            transition: background-color 0.5s;
         }
         .result-box h2 {
-            color: #004d80;
+            color: var(--heading-color);
             font-size: 1.8em;
             font-weight: 700;
         }
         .carbon-score {
             font-size: 3em;
             font-weight: 700;
-            color: #28a745;
+            color: var(--carbon-score-color);
             margin: 10px 0;
         }
         .comparison-text {
             font-size: 1.2em;
             font-weight: 600;
-            color: #555;
+            color: var(--text-color);
         }
         .comparison-text span {
-            color: #004d80;
+            color: var(--heading-color);
         }
 
         .actions {
@@ -120,8 +148,8 @@
         }
         .action-button {
             background-color: transparent;
-            color: #007bff;
-            border: 2px solid #007bff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
@@ -129,16 +157,43 @@
             transition: background-color 0.3s, color 0.3s;
         }
         .action-button:hover {
-            background-color: #007bff;
+            background-color: var(--primary-color);
             color: #fff;
+        }
+        
+        /* Estilo para o ícone de Modo Escuro/Claro */
+        .mode-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.5s;
+        }
+        .dark-mode .mode-toggle .moon-icon {
+            display: block;
+        }
+        .dark-mode .mode-toggle .sun-icon {
+            display: none;
+        }
+        .mode-toggle .moon-icon {
+            display: none;
         }
     </style>
 </head>
-<body>
+<body class="">
 
     <div class="container">
+        <button class="mode-toggle" id="mode-toggle">
+            <span class="sun-icon">☀︎</span>
+            <span class="moon-icon">☾</span>
+        </button>
+
         <div id="intro-screen" class="screen">
-            <img src="assets/Rgr9Zo9f_450x289.jpg" alt="Dashboard de Rastreabilidade">
+            <img src="assets/Rgr9Zo9f_450x289.jpg" alt="Iveco Logo" style="width: 330px; margin-bottom: 20px;">
             <h1>Dashboard de Rastreabilidade</h1>
             <p>Conheça a jornada de um material sustentável em nossa cadeia de suprimentos.</p>
             <div class="button-group">
@@ -167,7 +222,7 @@
     </div>
 
     <script>
-        // NOVO: Dados dos materiais
+        // Dados dos materiais
         const materials = {
             aluminio: {
                 title: "Jornada do Material: Lote de Alumínio #7284",
@@ -177,7 +232,7 @@
                     { title: "Transporte", info: 'Transportado via modal ferroviário de SP para a Iveco em MG.', score: '0.1 kg CO₂e/kg' }
                 ],
                 totalScore: "0.8 kg CO₂e/kg",
-                comparison: "Isso representa uma **redução de 95%** em relação ao material virgem (16 kg CO₂e/kg)."
+                comparison: "Isso representa uma <strong>redução de 95%</strong> em relação ao material virgem (16 kg CO₂e/kg)."
             },
             aco: {
                 title: "Jornada do Material: Lote de Aço #8901",
@@ -187,7 +242,7 @@
                     { title: "Transporte", info: 'Transportado via modal rodoviário (caminhão elétrico) até a Iveco.', score: '0.05 kg CO₂e/kg' }
                 ],
                 totalScore: "0.45 kg CO₂e/kg",
-                comparison: "Isso representa uma **redução de 90%** em relação ao material virgem (4.5 kg CO₂e/kg)."
+                comparison: "Isso representa uma <strong>redução de 90%</strong> em relação ao material virgem (4.5 kg CO₂e/kg)."
             },
             plastico: {
                 title: "Jornada do Material: Lote de Plástico #5678",
@@ -197,11 +252,10 @@
                     { title: "Transporte", info: 'Transportado via modal marítimo (cabotagem) até o porto mais próximo.', score: '0.02 kg CO₂e/kg' }
                 ],
                 totalScore: "0.17 kg CO₂e/kg",
-                comparison: "Isso representa uma **redução de 85%** em relação ao material virgem (1.1 kg CO₂e/kg)."
+                comparison: "Isso representa uma <strong>redução de 85%</strong> em relação ao material virgem (1.1 kg CO₂e/kg)."
             }
         };
 
-        // NOVO: Seletores para os elementos
         const introScreen = document.getElementById('intro-screen');
         const resultScreen = document.getElementById('result-screen');
         const trackButtons = document.querySelectorAll('.track-btn');
@@ -210,19 +264,17 @@
         const carbonScore = document.getElementById('carbon-score');
         const comparisonText = document.getElementById('comparison-text');
         const backButton = document.getElementById('back-btn');
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
 
-        // NOVO: Funcionalidade para os botões de rastreio
         trackButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const materialType = this.dataset.material;
                 const materialData = materials[materialType];
 
                 if (materialData) {
-                    // Atualiza o título
                     resultTitle.textContent = materialData.title;
-
-                    // Atualiza os cards da jornada
-                    journeyContainer.innerHTML = ''; // Limpa o conteúdo anterior
+                    journeyContainer.innerHTML = '';
                     materialData.journey.forEach(step => {
                         const card = document.createElement('div');
                         card.classList.add('journey-card');
@@ -234,21 +286,38 @@
                         journeyContainer.appendChild(card);
                     });
 
-                    // Atualiza o placar e a comparação
                     carbonScore.textContent = materialData.totalScore;
                     comparisonText.innerHTML = materialData.comparison;
 
-                    // Alterna as telas
                     introScreen.style.display = 'none';
                     resultScreen.style.display = 'block';
                 }
             });
         });
 
-        // Funcionalidade para o botão de voltar
         backButton.addEventListener('click', function() {
             resultScreen.style.display = 'none';
             introScreen.style.display = 'block';
+        });
+
+        // Lógica do Modo Escuro
+        // Verifica a preferência do usuário salva no localStorage
+        const userPrefersDark = localStorage.getItem('theme') === 'dark';
+        if (userPrefersDark) {
+            body.classList.add('dark-mode');
+        } else {
+            body.classList.remove('dark-mode');
+        }
+
+        // Evento de clique no botão
+        modeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+            // Salva a preferência no localStorage
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
         });
     </script>
 
